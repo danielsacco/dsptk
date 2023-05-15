@@ -13,7 +13,7 @@ namespace dsptk {
 
         lastOutput += k * (x - lastOutput);
 
-        if (isnan(lastOutput)) {
+        if (std::isnan(lastOutput)) {
             lastOutput = 0.;
         }
 
