@@ -22,3 +22,10 @@ enable_testing()
 
 add_subdirectory(dsptk)
 add_subdirectory(test)
+
+option(INSTALL_GTEST "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)" OFF)
+
+install(TARGETS dsptk 
+	LIBRARY DESTINATION lib
+    ARCHIVE DESTINATION lib COMPONENT Development
+)
