@@ -3,8 +3,13 @@
 project(dsptk_lib)
 
 add_library(dsptk STATIC
-  dsptk.cpp
-  dsptk.hpp
+	"detector.h"
+	"detector.cc"
+	"dynamics.h" 
+	"dynamics.cc" 
+	"conversions.h"
 )
 
-install(FILES dsptk.hpp DESTINATION include)
+install(FILES 
+	"detector.h" "dynamics.h" "conversions.h" DESTINATION include
+)
