@@ -4,7 +4,9 @@ include_directories(${PROJECT_SOURCE_DIR})
 
 add_executable(
   dsptk_test
-  "dsptk_test.cc"
+  "detector_test.cc"
+  "convolution_test.cc"
+  "dft_test.cc"
 )
 target_link_libraries(
   dsptk_test
