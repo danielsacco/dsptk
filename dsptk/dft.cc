@@ -1,6 +1,7 @@
 #include "dft.h"
 #include "constants.h"
 #include <cmath>
+#include <limits>
 
 namespace dsptk {
 
