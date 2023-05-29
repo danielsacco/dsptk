@@ -290,4 +290,209 @@ namespace filters {
 
 
 	}
+
+	namespace bandpass {
+		TEST(BandPassFilter, WhenZeroInputShouldZeroOutput) {
+			dsptk::BandPassFilter sut(200., 10., sampleRate);
+
+			std::vector<double> input(10, 0.);
+			std::vector<double> output(input.size());
+
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_EQ(output, input);
+		}
+
+		TEST(BandPassFilter, WhenFreqAboveFcShouldReduceNearZero) {
+			double fc = 200.;
+			double fTest = 450.;
+
+			dsptk::BandPassFilter sut(fc, 10., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), 0., .0001);
+
+		}
+
+		TEST(BandPassFilter, WhenFreqBelowFcShouldReduceNearZero) {
+			double fc = 300.;
+			double fTest = 50.;
+
+			dsptk::BandPassFilter sut(fc, 10., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), 0., .0001);
+
+		}
+
+		TEST(BandPassFilter, WhenFreqIsFcShouldNotReduce) {
+			double fc = 250.;
+			double fTest = 250.;
+
+			dsptk::BandPassFilter sut(fc, 50., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), dsptk::MeanSquare(input), .001);
+
+		}
+
+		TEST(BandPassFilter, WhenFreqIsAtBwShouldReduce3dB) {
+			double fc = 250.;
+			double fTest = 275.;
+
+			dsptk::BandPassFilter sut(fc, 50., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), dsptk::MeanSquare(input) / 2., .005);
+
+		}
+
+	}
+
+	namespace bandreject {
+		TEST(BandRejectFilter, WhenZeroInputShouldZeroOutput) {
+			dsptk::BandRejectFilter sut(200., 10., sampleRate);
+
+			std::vector<double> input(10, 0.);
+			std::vector<double> output(input.size());
+
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_EQ(output, input);
+		}
+
+		TEST(BandRejectFilter, WhenFreqAboveFcShouldNotReduce) {
+			double fc = 200.;
+			double fTest = 450.;
+
+			dsptk::BandRejectFilter sut(fc, 10., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), dsptk::MeanSquare(input), .0005);
+
+		}
+
+		TEST(BandRejectFilter, WhenFreqBelowFcShouldNotReduce) {
+			double fc = 300.;
+			double fTest = 50.;
+
+			dsptk::BandRejectFilter sut(fc, 10., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), dsptk::MeanSquare(input), .0001);
+
+		}
+
+		TEST(BandRejectFilter, WhenFreqIsFcShouldReduceNearZero) {
+			double fc = 250.;
+			double fTest = 250.;
+
+			dsptk::BandRejectFilter sut(fc, 50., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), 0., .001);
+
+		}
+
+		TEST(BandRejectFilter, WhenFreqIsAtBwShouldReduce3dB) {
+			double fc = 250.;
+			double fTest = 275.;
+
+			dsptk::BandRejectFilter sut(fc, 50., sampleRate);
+
+			// Fill input with a sine signal at fTest
+			auto input = dsptk::sin(fTest, sampleRate, 10000);
+
+			// Process through filter to obtain the output
+			std::vector<double> output(input.size());
+			std::transform(input.begin(), input.end(), output.begin(),
+				[&](double in) {
+					return sut.ProcessSample(in);
+				}
+			);
+
+			EXPECT_NEAR(dsptk::MeanSquare(output), dsptk::MeanSquare(input) / 2., .005);
+
+		}
+
+	}
+
 }

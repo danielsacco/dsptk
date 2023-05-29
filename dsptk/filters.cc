@@ -164,18 +164,74 @@ namespace dsptk {
 
 	inline void BandPassFilter::CalculateConstants()
 	{
-		double cosFactor = std::cos(DOUBLE_PI * frequency / samplerate);
+		double cosFactor = 2 * std::cos(DOUBLE_PI * frequency / samplerate);
 		double R = 1 - 3 * bandwidth / samplerate;
 		double RR = R * R;
 
-		b1 = 2 * R * cosFactor;
+		b1 = R * cosFactor;
 		b2 = -RR;
 
-		double K = (1 - b1 + RR) / (2 - 2 * cosFactor);
+		double K = (1 - b1 + RR) / (2 - cosFactor);
 
 		a0 = 1 - K;
-		a1 = 2 * (K - R) * cosFactor;
+		a1 = (K - R) * cosFactor;
 		a2 = RR - K;
+
+	}
+
+	BandRejectFilter::BandRejectFilter(double frequency, double bandwidth, double samplerate)
+		: frequency{ frequency }
+		, bandwidth{ bandwidth }
+		, samplerate{ samplerate }
+	{
+		CalculateConstants();
+	}
+
+	double BandRejectFilter::ProcessSample(double input)
+	{
+		double output = a0 * input + a1 * in1 + a2 * in2 + b1 * out1 + b2 * out2;
+
+		// Shift samples
+		out2 = out1;
+		out1 = output;
+		in2 = in1;
+		in1 = input;
+
+		return output;
+	}
+
+	void BandRejectFilter::UpdateSamplerate(double sRate)
+	{
+		samplerate = sRate;
+		CalculateConstants();
+	}
+
+	void BandRejectFilter::UpdateFrequency(double freq)
+	{
+		frequency = freq;
+		CalculateConstants();
+	}
+
+	void BandRejectFilter::UpdateBandwidth(double bw)
+	{
+		bandwidth = bw;
+		CalculateConstants();
+	}
+
+	inline void BandRejectFilter::CalculateConstants()
+	{
+		double cosFactor = 2 * std::cos(DOUBLE_PI * frequency / samplerate);
+		double R = 1 - 3 * bandwidth / samplerate;
+		double RR = R * R;
+
+		b1 = R * cosFactor;
+		b2 = -RR;
+
+		double K = (1 - b1 + RR) / (2 - cosFactor);
+
+		a0 = K;
+		a1 = - K * cosFactor;
+		a2 = K;
 
 	}
 
