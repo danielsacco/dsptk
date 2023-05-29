@@ -7,6 +7,7 @@ add_executable(
   "detector_test.cc"
   "convolution_test.cc"
   "dft_test.cc"
+  "filters_test.cc"
 )
 target_link_libraries(
   dsptk_test
