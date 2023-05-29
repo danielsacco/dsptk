@@ -123,4 +123,60 @@ namespace dsptk {
 		return std::sqrt(MeanSquare(input));
 	}
 
+	BandPassFilter::BandPassFilter(double frequency, double bandwidth, double samplerate)
+		: frequency{ frequency }
+		, bandwidth { bandwidth }
+		, samplerate{ samplerate }
+	{
+		CalculateConstants();
+	}
+
+	double BandPassFilter::ProcessSample(double input)
+	{
+		double output = a0 * input + a1 * in1 + a2 * in2 + b1 * out1 + b2 * out2;
+
+		// Shift samples
+		out2 = out1;
+		out1 = output;
+		in2 = in1;
+		in1 = input;
+
+		return output;
+	}
+
+	void BandPassFilter::UpdateSamplerate(double sRate)
+	{
+		samplerate = sRate;
+		CalculateConstants();
+	}
+
+	void BandPassFilter::UpdateFrequency(double freq)
+	{
+		frequency = freq;
+		CalculateConstants();
+	}
+
+	void BandPassFilter::UpdateBandwidth(double bw)
+	{
+		bandwidth = bw;
+		CalculateConstants();
+	}
+
+	inline void BandPassFilter::CalculateConstants()
+	{
+		double cosFactor = std::cos(DOUBLE_PI * frequency / samplerate);
+		double R = 1 - 3 * bandwidth / samplerate;
+		double RR = R * R;
+
+		b1 = 2 * R * cosFactor;
+		b2 = -RR;
+
+		double K = (1 - b1 + RR) / (2 - 2 * cosFactor);
+
+		a0 = 1 - K;
+		a1 = 2 * (K - R) * cosFactor;
+		a2 = RR - K;
+
+	}
+
 }	// End namespace dsptk

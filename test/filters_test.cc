@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <algorithm>
-#include <cmath>
 #include "dsptk/filters.h"
 #include "dsptk/constants.h"
+#include "dsptk/signals.h"
 
 namespace filters {
 
@@ -132,11 +132,7 @@ namespace filters {
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(1000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
 
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
@@ -157,11 +153,7 @@ namespace filters {
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(1000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
 
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
@@ -182,12 +174,8 @@ namespace filters {
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(1000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
-
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
 			std::transform(input.begin(), input.end(), output.begin(),
@@ -244,11 +232,7 @@ namespace filters {
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(1000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
 
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
@@ -269,11 +253,7 @@ namespace filters {
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(10000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
 
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
@@ -294,11 +274,7 @@ namespace filters {
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
 			// Fill input with a sine signal at fTest
-			std::vector<double> input(1000);
-			double k = dsptk::DOUBLE_PI * fTest / sampleRate;
-			for (int i = 0; i < input.size(); i++) {
-				input[i] = std::sin(k * i);
-			}
+			auto input = dsptk::sin(fTest, sampleRate, 1000);
 
 			// Process through filter to obtain the output
 			std::vector<double> output(input.size());
