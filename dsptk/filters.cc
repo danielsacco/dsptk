@@ -5,11 +5,9 @@
 namespace dsptk {
 
 	// Solution reference: https://www.musicdsp.org/en/latest/Filters/135-dc-filter.html
-	DCBlocker::DCBlocker(double freq, double sRate)
-		: frequency{ freq }
-		, samplerate{ sRate }
+	DCBlocker::DCBlocker(double freq, double sRate) : Filter{freq, sRate}
 	{
-		SetR();
+		CalculateConstants();
 	}
 
 	double DCBlocker::ProcessSample(double input)
@@ -22,25 +20,13 @@ namespace dsptk {
 		return output;
 	}
 
-	void DCBlocker::UpdateSamplerate(double sRate) {
-		samplerate = sRate;
-		SetR();
-	}
-
-	void DCBlocker::UpdateFrequency(double freq) {
-		frequency = freq;
-		SetR();
-	}
-
-	inline void DCBlocker::SetR()
+	inline void DCBlocker::CalculateConstants()
 	{
-		R = 1 - (DOUBLE_PI * frequency / samplerate);
+		R = 1 - (DOUBLE_PI * mFrequency / mSamplerate);
 	}
 
 	// Single Pole Recursive Filters. Digital Signal Processing Steven W. Smith Page 322
-	SinglePoleLowPass::SinglePoleLowPass(double freq, double sRate)
-		: frequency{ freq }
-		, samplerate{ sRate }
+	SinglePoleLowPass::SinglePoleLowPass(double freq, double sRate) : Filter{ freq, sRate }
 	{
 		CalculateConstants();
 	}
@@ -54,27 +40,15 @@ namespace dsptk {
 		return output;
 	}
 
-	void SinglePoleLowPass::UpdateSamplerate(double sRate) {
-		samplerate = sRate;
-		CalculateConstants();
-	}
-
-	void SinglePoleLowPass::UpdateFrequency(double freq) {
-		frequency = freq;
-		CalculateConstants();
-	}
-
 	inline void SinglePoleLowPass::CalculateConstants()
 	{
-		b1 = std::exp( - (DOUBLE_PI * frequency / samplerate));
+		b1 = std::exp( - (DOUBLE_PI * mFrequency / mSamplerate));
 		a0 = 1 - b1;
 	}
 
 
 	// Single Pole Recursive Filters. Digital Signal Processing Steven W. Smith Page 322
-	SinglePoleHiPass::SinglePoleHiPass(double freq, double sRate)
-		: frequency{ freq }
-		, samplerate{ sRate }
+	SinglePoleHiPass::SinglePoleHiPass(double freq, double sRate) : Filter{ freq, sRate }
 	{
 		CalculateConstants();
 	}
@@ -89,19 +63,9 @@ namespace dsptk {
 		return output;
 	}
 
-	void SinglePoleHiPass::UpdateSamplerate(double sRate) {
-		samplerate = sRate;
-		CalculateConstants();
-	}
-
-	void SinglePoleHiPass::UpdateFrequency(double freq) {
-		frequency = freq;
-		CalculateConstants();
-	}
-
 	inline void SinglePoleHiPass::CalculateConstants()
 	{
-		b1 = std::exp(-(DOUBLE_PI * frequency / samplerate));
+		b1 = std::exp(-(DOUBLE_PI * mFrequency / mSamplerate));
 		a0 = (1 + b1) / 2.;
 		a1 = - a0;
 	}
@@ -124,9 +88,7 @@ namespace dsptk {
 	}
 
 	BandPassFilter::BandPassFilter(double frequency, double bandwidth, double samplerate)
-		: frequency{ frequency }
-		, bandwidth { bandwidth }
-		, samplerate{ samplerate }
+		: BandFilter{ frequency, bandwidth, samplerate }
 	{
 		CalculateConstants();
 	}
@@ -144,28 +106,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void BandPassFilter::UpdateSamplerate(double sRate)
-	{
-		samplerate = sRate;
-		CalculateConstants();
-	}
-
-	void BandPassFilter::UpdateFrequency(double freq)
-	{
-		frequency = freq;
-		CalculateConstants();
-	}
-
-	void BandPassFilter::UpdateBandwidth(double bw)
-	{
-		bandwidth = bw;
-		CalculateConstants();
-	}
-
 	inline void BandPassFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * frequency / samplerate);
-		double R = 1 - 3 * bandwidth / samplerate;
+		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
 		b1 = R * cosFactor;
@@ -180,9 +124,7 @@ namespace dsptk {
 	}
 
 	BandRejectFilter::BandRejectFilter(double frequency, double bandwidth, double samplerate)
-		: frequency{ frequency }
-		, bandwidth{ bandwidth }
-		, samplerate{ samplerate }
+		: BandFilter{ frequency, bandwidth, samplerate }
 	{
 		CalculateConstants();
 	}
@@ -200,28 +142,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void BandRejectFilter::UpdateSamplerate(double sRate)
-	{
-		samplerate = sRate;
-		CalculateConstants();
-	}
-
-	void BandRejectFilter::UpdateFrequency(double freq)
-	{
-		frequency = freq;
-		CalculateConstants();
-	}
-
-	void BandRejectFilter::UpdateBandwidth(double bw)
-	{
-		bandwidth = bw;
-		CalculateConstants();
-	}
-
 	inline void BandRejectFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * frequency / samplerate);
-		double R = 1 - 3 * bandwidth / samplerate;
+		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
 		b1 = R * cosFactor;
@@ -233,6 +157,36 @@ namespace dsptk {
 		a1 = - K * cosFactor;
 		a2 = K;
 
+	}
+
+	Filter::Filter(double frequency, double samplerate)
+		: mFrequency{frequency}
+		, mSamplerate{samplerate}
+	{
+	}
+
+	void Filter::UpdateSamplerate(double samplerate)
+	{
+		mSamplerate = samplerate;
+		CalculateConstants();
+	}
+
+	void Filter::UpdateFrequency(double frequency)
+	{
+		mFrequency = frequency;
+		CalculateConstants();
+	}
+
+	BandFilter::BandFilter(double frequency, double bandwidth, double samplerate)
+		:Filter{ frequency, samplerate }
+		, mBandwidth{ bandwidth }
+	{
+	}
+
+	void BandFilter::UpdateBandwidth(double bandwidth)
+	{
+		mBandwidth = bandwidth;
+		CalculateConstants();
 	}
 
 }	// End namespace dsptk
