@@ -4,6 +4,8 @@
 
 namespace dsptk {
 
+	/** @brief Base class for all filters. 
+	*/
 	class Filter {
 	public:
 		Filter(double frequency, double samplerate);
@@ -20,6 +22,66 @@ namespace dsptk {
 		inline virtual void CalculateConstants() = 0;
 
 	};
+
+	/** @brief Base class for bandpass/bandreject filters.
+	*/
+	class BandFilter : public Filter
+	{
+	public:
+		BandFilter(double frequency, double bandwidth, double samplerate);
+
+		/**
+		* Bandwidth expressed in Hz, it should be internally calculated the "digital frequency"
+		*/
+		void UpdateBandwidth(double bandwidth);
+
+		// This class does not implement the processing, is just a base class for bandpass bandreject filters
+		virtual double ProcessSample(double input) = 0;
+
+	protected:
+		/**
+		* Bandwidth expressed in Hz, it should be internally calculated the "digital frequency"
+		*/
+		double mBandwidth;
+	};
+
+	/** @brief Parametric filter
+	* Bandwith set at 3dB below gain for boost, 3dB above gain for cut.
+	* When gain is below 3dB, bandwith is set at the aritmethic media between 0dB and gain.
+	* 
+	* Reference gain G0 is fixed as 0dB.
+	* 
+	* Implementation according Sophocles Orfanidis - Introduction to Signal Processing - Second Edition section 12.4
+	*/
+	class ParametricFilter : public BandFilter
+	{
+	public:
+		ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate);
+
+		double ProcessSample(double input) override;
+
+		void UpdateGain(double gain);
+
+		void UpdateGainDB(double gainDB);
+
+	private:
+		// Filter state
+		double w0 = .0;
+		double w1 = .0;
+		double w2 = .0;
+		// Filter constants: Should be calculated at construction time and on parameters update.
+		double b0, b1, b2, a1, a2;
+
+		// Gain in units (not dBs)
+		double mGain;
+
+		inline void CalculateConstants() override;
+
+		/** Calculates the beta factor.
+		*/
+		double CalculateBeta(double centerGain, double referenceGain, double bw);
+	};
+
 
 	class DCBlocker : public Filter
 	{
@@ -65,23 +127,12 @@ namespace dsptk {
 		inline void CalculateConstants() override;
 	};
 
-	class BandFilter : public Filter 
-	{
-	public:
-		BandFilter(double frequency, double bandwidth, double samplerate);
-
-		void UpdateBandwidth(double bandwidth);
-
-	protected:
-		double mBandwidth;
-	};
-
 	class BandPassFilter : public BandFilter
 	{
 	public:
 		BandPassFilter(double frequency, double bandwidth, double samplerate);
 
-		double ProcessSample(double input);
+		double ProcessSample(double input) override;
 
 	private:
 		double in1 = .0;

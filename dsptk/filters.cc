@@ -1,8 +1,40 @@
 #include "filters.h"
 #include "constants.h"
 #include <cmath>
+#include "conversions.h"
 
 namespace dsptk {
+
+	Filter::Filter(double frequency, double samplerate)
+		: mFrequency{ frequency }
+		, mSamplerate{ samplerate }
+	{
+	}
+
+	void Filter::UpdateSamplerate(double samplerate)
+	{
+		mSamplerate = samplerate;
+		CalculateConstants();
+	}
+
+	void Filter::UpdateFrequency(double frequency)
+	{
+		mFrequency = frequency;
+		CalculateConstants();
+	}
+
+	BandFilter::BandFilter(double frequency, double bandwidth, double samplerate)
+		:Filter{ frequency, samplerate }
+		, mBandwidth{ bandwidth }
+	{
+	}
+
+	void BandFilter::UpdateBandwidth(double bandwidth)
+	{
+		mBandwidth = bandwidth;
+		CalculateConstants();
+	}
+
 
 	// Solution reference: https://www.musicdsp.org/en/latest/Filters/135-dc-filter.html
 	DCBlocker::DCBlocker(double freq, double sRate) : Filter{freq, sRate}
@@ -159,34 +191,89 @@ namespace dsptk {
 
 	}
 
-	Filter::Filter(double frequency, double samplerate)
-		: mFrequency{frequency}
-		, mSamplerate{samplerate}
+	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate)
+		: BandFilter{ frequency, bandwidth, samplerate }
+		, mGain{ DBToAmp(initialGainDB) }
 	{
-	}
-
-	void Filter::UpdateSamplerate(double samplerate)
-	{
-		mSamplerate = samplerate;
 		CalculateConstants();
 	}
 
-	void Filter::UpdateFrequency(double frequency)
+	double ParametricFilter::ProcessSample(double input)
 	{
-		mFrequency = frequency;
+		w0 = input - a1 * w1 - a2 * w2;
+		double output = b0 * w0 + b1 * w1 + b2 * w2;
+
+		// Update filter state
+		w2 = w1;
+		w1 = w0;
+
+		return output;
+	}
+
+	void ParametricFilter::UpdateGain(double gain)
+	{
+		mGain = gain;
 		CalculateConstants();
 	}
 
-	BandFilter::BandFilter(double frequency, double bandwidth, double samplerate)
-		:Filter{ frequency, samplerate }
-		, mBandwidth{ bandwidth }
+	void ParametricFilter::UpdateGainDB(double gainDB)
 	{
+		mGain = DBToAmp(gainDB);
+		CalculateConstants();
 	}
 
-	void BandFilter::UpdateBandwidth(double bandwidth)
+	inline void ParametricFilter::CalculateConstants()
 	{
-		mBandwidth = bandwidth;
-		CalculateConstants();
+		// Digital bandwidth
+		double bw = DOUBLE_PI * mBandwidth / mSamplerate;
+		
+		// Digital center frequency
+		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+
+		// Reference gain fixed at 0dB. May be configurable for a shelving filter.
+		double g0 = 1.;
+
+		// Beta factor
+		double beta = CalculateBeta(mGain, g0, bw);
+
+		// Filter constants
+		a1 = -2. * std::cos(fc) / (1. + beta);
+		a2 = (1. - beta) / (1. + beta);
+		b0 = (g0 + mGain * beta) / (1. + beta);
+		b1 = g0 * a1;
+		b2 = (g0 - mGain * beta) / (1. + beta);
+	}
+
+	/*
+	* Calculates the beta factor according 
+	* Sophocles Orfanidis - Introduction to Signal Processing - Second Edition 12.4.3
+	*/
+	double ParametricFilter::CalculateBeta(double centerGain, double referenceGain, double bw)
+	{
+		const double cut_boost = centerGain - referenceGain;
+
+		// Square the center and reference gains
+		const double gain2 = centerGain * centerGain;
+		const double ref2 = referenceGain * referenceGain;
+
+		double gbFactor = 1.;
+
+		// We only need to calculate the gbFactor when:
+		// - boost is more than 3dB above the reference
+		// - cut is more than 3dB below the reference
+		// the rest of the cases for aritmetic media between both gains yield 1 for the factor
+		if ((cut_boost > 0) && (gain2 > 2 * ref2)) {
+			// Boost is more than 3dB above the reference, set the bw 3dB below the peak
+			double gb2 = gain2 / 2.;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+		else if ((cut_boost < 0) && (gain2 < ref2 / 2.)) {
+			// Cut is more than 3dB below the reference, set the bw 3dB above the notch
+			double gb2 = 2 * gain2;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+
+		return gbFactor * std::tan(bw / 2);
 	}
 
 }	// End namespace dsptk
