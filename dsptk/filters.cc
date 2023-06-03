@@ -13,12 +13,14 @@ namespace dsptk {
 
 	void Filter::UpdateSamplerate(double samplerate)
 	{
+		if (samplerate == mSamplerate) return;
 		mSamplerate = samplerate;
 		CalculateConstants();
 	}
 
 	void Filter::UpdateFrequency(double frequency)
 	{
+		if (frequency == mFrequency) return;
 		mFrequency = frequency;
 		CalculateConstants();
 	}
@@ -31,6 +33,7 @@ namespace dsptk {
 
 	void BandFilter::UpdateBandwidth(double bandwidth)
 	{
+		if (mBandwidth == bandwidth) return;
 		mBandwidth = bandwidth;
 		CalculateConstants();
 	}
@@ -193,7 +196,7 @@ namespace dsptk {
 
 	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate)
 		: BandFilter{ frequency, bandwidth, samplerate }
-		, mGain{ DBToAmp(initialGainDB) }
+		, mGainDB{ initialGainDB }
 	{
 		CalculateConstants();
 	}
@@ -210,15 +213,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void ParametricFilter::UpdateGain(double gain)
-	{
-		mGain = gain;
-		CalculateConstants();
-	}
-
 	void ParametricFilter::UpdateGainDB(double gainDB)
 	{
-		mGain = DBToAmp(gainDB);
+		if (gainDB == mGainDB) return;
+		mGainDB = gainDB;
 		CalculateConstants();
 	}
 
@@ -230,18 +228,20 @@ namespace dsptk {
 		// Digital center frequency
 		double fc = DOUBLE_PI * mFrequency / mSamplerate;
 
-		// Reference gain fixed at 0dB. May be configurable for a shelving filter.
+		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
+		double linearGain = DBToAmp(mGainDB);
+
 		// Beta factor
-		double beta = CalculateBeta(mGain, g0, bw);
+		double beta = CalculateBeta(linearGain, g0, bw);
 
 		// Filter constants
 		a1 = -2. * std::cos(fc) / (1. + beta);
 		a2 = (1. - beta) / (1. + beta);
-		b0 = (g0 + mGain * beta) / (1. + beta);
+		b0 = (g0 + linearGain * beta) / (1. + beta);
 		b1 = g0 * a1;
-		b2 = (g0 - mGain * beta) / (1. + beta);
+		b2 = (g0 - linearGain * beta) / (1. + beta);
 	}
 
 	/*

@@ -4,7 +4,7 @@
 
 namespace dsptk {
 
-	/** @brief Base class for all filters. 
+	/* @brief Base class for all filters. 
 	*/
 	class Filter {
 	public:
@@ -45,7 +45,7 @@ namespace dsptk {
 		double mBandwidth;
 	};
 
-	/** @brief Parametric filter
+	/* @brief Parametric filter
 	* Bandwith set at 3dB below gain for boost, 3dB above gain for cut.
 	* When gain is below 3dB, bandwith is set at the aritmethic media between 0dB and gain.
 	* 
@@ -72,8 +72,8 @@ namespace dsptk {
 		// Filter constants: Should be calculated at construction time and on parameters update.
 		double b0, b1, b2, a1, a2;
 
-		// Gain in units (not dBs)
-		double mGain;
+		// Gain in dBs
+		double mGainDB;
 
 		inline void CalculateConstants() override;
 
