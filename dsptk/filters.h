@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <cmath>
+#include <memory>
 
 namespace dsptk {
 
@@ -21,6 +22,37 @@ namespace dsptk {
 
 		inline virtual void CalculateConstants() = 0;
 
+	};
+
+	/* @brief Bank of filters connected in series.
+	*/
+	class FilterBank {
+	public:
+		void AddFilter(Filter* filter) {
+			filters.push_back(filter);
+		}
+
+		void RemoveFilterAt(int position) {
+			if (position < filters.size())
+				filters.erase(filters.begin() + position);
+		}
+
+		double ProcessSample(double input) {
+			double output = input;
+			for (auto& filter : filters) {
+				output = filter->ProcessSample(output);
+			}
+			return output;
+		}
+
+		void UpdateSamplerate(double samplerate) {
+			for (auto& filter : filters) {
+				filter->UpdateSamplerate(samplerate);
+			}
+		}
+
+	private:
+		std::vector<Filter*> filters;
 	};
 
 	/** @brief Base class for bandpass/bandreject filters.
@@ -59,8 +91,6 @@ namespace dsptk {
 		ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate);
 
 		double ProcessSample(double input) override;
-
-		void UpdateGain(double gain);
 
 		void UpdateGainDB(double gainDB);
 
