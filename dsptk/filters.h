@@ -25,10 +25,11 @@ namespace dsptk {
 	};
 
 	/* @brief Bank of filters connected in series.
+	* TODO !!!!
 	*/
 	class FilterBank {
 	public:
-		void AddFilter(Filter* filter) {
+		void AddFilter(std::shared_ptr<Filter>& filter) {
 			filters.push_back(filter);
 		}
 
@@ -52,7 +53,7 @@ namespace dsptk {
 		}
 
 	private:
-		std::vector<Filter*> filters;
+		std::vector<std::shared_ptr<Filter>> filters;
 	};
 
 	/** @brief Base class for bandpass/bandreject filters.
@@ -110,6 +111,71 @@ namespace dsptk {
 		/** Calculates the beta factor.
 		*/
 		double CalculateBeta(double centerGain, double referenceGain, double bw);
+
+	};
+
+	/* @brief LowPass Shelving Filter filter
+	* TODO!!!
+	*/
+	class LowPassShelvingFilter : public Filter
+	{
+	public:
+		LowPassShelvingFilter(double frequency, double initialGainDB, double samplerate);
+
+		double ProcessSample(double input) override;
+
+		void UpdateGainDB(double gainDB);
+
+	protected:
+		inline void CalculateConstants() override;
+
+	private:
+		// Filter state
+		double w0 = .0;
+		double w1 = .0;
+
+		// Filter constants: Should be calculated at construction time and on parameters update.
+		double b0, b1, a1;
+
+		// Gain in dBs
+		double mGainDB;
+
+		/** Calculates the beta factor.
+*/
+		double CalculateBeta(double centerGain, double referenceGain, double cutBoostFreq);
+
+	};
+
+	/* @brief HiPass Shelving Filter filter
+	* TODO!!!
+	*/
+	class HiPassShelvingFilter : public Filter
+	{
+	public:
+		HiPassShelvingFilter(double frequency, double initialGainDB, double samplerate);
+
+		double ProcessSample(double input) override;
+
+		void UpdateGainDB(double gainDB);
+
+	protected:
+		inline void CalculateConstants() override;
+
+	private:
+		// Filter state
+		double w0 = .0;
+		double w1 = .0;
+
+		// Filter constants: Should be calculated at construction time and on parameters update.
+		double b0, b1, a1;
+
+		// Gain in dBs
+		double mGainDB;
+
+		/** Calculates the beta factor.
+		*/
+		double CalculateBeta(double centerGain, double referenceGain, double cutBoostFreq);
+
 	};
 
 
