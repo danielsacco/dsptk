@@ -624,7 +624,7 @@ namespace filters {
 	}
 
 	namespace lowpassshelving {
-		TEST(LowPassShelve, WhenZeroInputShouldZeroOutput) {
+		TEST(LowPassShelf, WhenZeroInputShouldZeroOutput) {
 			dsptk::LowPassShelvingFilter sut(200., 9., sampleRate);
 
 			std::vector<double> input(10, 0.);
@@ -636,7 +636,7 @@ namespace filters {
 
 		namespace boost {
 
-			TEST(LowPassShelve, WhenFreqBelowFcShouldBoost) {
+			TEST(LowPassShelf, WhenFreqBelowFcShouldBoost) {
 				double fc = 200.;
 				double gain = 9.;
 
@@ -655,7 +655,7 @@ namespace filters {
 
 			}
 
-			TEST(LowPassShelve, WhenFreqIsFcShouldBoost3dBLessThanGain) {
+			TEST(LowPassShelf, WhenFreqIsFcShouldBoost3dBLessThanGain) {
 				double fc = 200.;
 				double gain = 9.;
 
@@ -674,7 +674,7 @@ namespace filters {
 
 			}
 
-			TEST(LowPassShelve, WhenFreqAboveFcShouldNotBoost) {
+			TEST(LowPassShelf, WhenFreqAboveFcShouldNotBoost) {
 				double fc = 50.;
 				double gain = 9.;
 
@@ -696,7 +696,7 @@ namespace filters {
 
 		namespace cut {
 
-			TEST(LowPassShelve, WhenFreqBelowFcShouldCut) {
+			TEST(LowPassShelf, WhenFreqBelowFcShouldCut) {
 				double fc = 200.;
 				double gain = -9.;
 
@@ -715,7 +715,7 @@ namespace filters {
 
 			}
 
-			TEST(LowPassShelve, WhenFreqIsFcShouldCut3dBLessThanGain) {
+			TEST(LowPassShelf, WhenFreqIsFcShouldCut3dBLessThanGain) {
 				double fc = 200.;
 				double gain = -9.;
 
@@ -734,7 +734,7 @@ namespace filters {
 
 			}
 
-			TEST(LowPassShelve, WhenFreqAboveFcShouldNotCut) {
+			TEST(LowPassShelf, WhenFreqAboveFcShouldNotCut) {
 				double fc = 50.;
 				double gain = -9.;
 
@@ -758,7 +758,7 @@ namespace filters {
 	}
 
 	namespace hipassshelving {
-		TEST(HiPassShelve, WhenZeroInputShouldZeroOutput) {
+		TEST(HiPassShelf, WhenZeroInputShouldZeroOutput) {
 			dsptk::HiPassShelvingFilter sut(200., 9., sampleRate);
 
 			std::vector<double> input(10, 0.);
@@ -770,7 +770,7 @@ namespace filters {
 
 		namespace boost {
 
-			TEST(HiPassShelve, WhenFreqAboveFcShouldBoost) {
+			TEST(HiPassShelf, WhenFreqAboveFcShouldBoost) {
 				double fc = 100.;
 				double gain = 9.;
 
@@ -789,7 +789,7 @@ namespace filters {
 
 			}
 
-			TEST(HiPassShelve, WhenFreqIsFcShouldBoost3dBLessThanGain) {
+			TEST(HiPassShelf, WhenFreqIsFcShouldBoost3dBLessThanGain) {
 				double fc = 200.;
 				double gain = 9.;
 
@@ -808,7 +808,7 @@ namespace filters {
 
 			}
 
-			TEST(HiPassShelve, WhenFreqBelowFcShouldNotBoost) {
+			TEST(HiPassShelf, WhenFreqBelowFcShouldNotBoost) {
 				double fc = 400.;
 				double gain = 9.;
 
@@ -830,7 +830,7 @@ namespace filters {
 
 		namespace cut {
 
-			TEST(HiPassShelve, WhenFreqAboveFcShouldCut) {
+			TEST(HiPassShelf, WhenFreqAboveFcShouldCut) {
 				double fc = 100.;
 				double gain = -9.;
 
@@ -849,7 +849,7 @@ namespace filters {
 
 			}
 
-			TEST(HiPassShelve, WhenFreqIsFcShouldCut3dBLessThanGain) {
+			TEST(HiPassShelf, WhenFreqIsFcShouldCut3dBLessThanGain) {
 				double fc = 200.;
 				double gain = -9.;
 
@@ -868,7 +868,7 @@ namespace filters {
 
 			}
 
-			TEST(HiPassShelve, WhenFreqBelowFcShouldNotCut) {
+			TEST(HiPassShelf, WhenFreqBelowFcShouldNotCut) {
 				double fc = 400.;
 				double gain = -9.;
 

@@ -194,9 +194,9 @@ namespace dsptk {
 
 	}
 
-	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate)
+	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double gainDB, double samplerate)
 		: BandFilter{ frequency, bandwidth, samplerate }
-		, mGainDB{ initialGainDB }
+		, mGainDB{ gainDB }
 	{
 		CalculateConstants();
 	}
@@ -276,9 +276,9 @@ namespace dsptk {
 		return gbFactor * std::tan(bw / 2.);
 	}
 
-	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, double initialGainDB, double samplerate)
+	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, double gainDb, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ initialGainDB }
+		, mGainDB{ gainDb }
 	{
 		CalculateConstants();
 	}
@@ -349,9 +349,9 @@ namespace dsptk {
 		return gbFactor * std::tan(cutBoostFreq / 2.);
 	}
 
-	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, double initialGainDB, double samplerate)
+	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, double gainDb, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ initialGainDB }
+		, mGainDB{ gainDb }
 	{
 		CalculateConstants();
 	}
