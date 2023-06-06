@@ -114,6 +114,11 @@ namespace dsptk {
 		BandFilter(double frequency, double bandwidth, double samplerate);
 
 		/**
+		 * @copydoc Filter::ProcessSample()
+		*/
+		virtual double ProcessSample(double input) = 0;
+
+		/**
 		 * @brief Updates the bandwidth of the filter.
 		 * @param bandwidth the bandwidth in Hz.
 		*/
