@@ -124,9 +124,6 @@ namespace dsptk {
 		*/
 		void UpdateBandwidth(double bandwidth);
 
-		// This class does not implement the processing, is just a base class for bandpass bandreject filters
-		virtual double ProcessSample(double input) = 0;
-
 	protected:
 		/**
 		 * @brief Bandwidth in Hz
