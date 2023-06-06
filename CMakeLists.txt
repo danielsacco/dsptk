@@ -24,6 +24,7 @@ enable_testing()
 
 add_subdirectory(dsptk)
 add_subdirectory(test)
+add_subdirectory(docs)
 
 option(INSTALL_GTEST "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)" OFF)
 

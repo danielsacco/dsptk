@@ -9,6 +9,7 @@ namespace filters {
 
 	// Test Values
 	const double sampleRate = 1000.;
+	const size_t testSamples = 10000;
 
 	// Helper function to produce an output vector with the same size as the input
 	// processed by a filter
@@ -59,7 +60,7 @@ namespace filters {
 		TEST(DCBlocker, WhenDCBiasedInputShouldReduceDCOutput) {
 			dsptk::DCBlocker sut(1., sampleRate);
 
-			std::vector<double> input(10000);
+			std::vector<double> input(testSamples);
 			for (int i = 0; i < input.size(); i++) {
 				switch (i % 4) {
 				case 0:
@@ -102,7 +103,7 @@ namespace filters {
 		TEST(SinglePoleLowPass, WhenStepInputShouldStepFromZeroToOne) {
 			dsptk::SinglePoleLowPass sut(10., sampleRate);
 
-			std::vector<double> input(1000, 1.);
+			std::vector<double> input(testSamples, 1.);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -119,8 +120,7 @@ namespace filters {
 
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -134,8 +134,7 @@ namespace filters {
 
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -149,8 +148,7 @@ namespace filters {
 
 			dsptk::SinglePoleLowPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 			
 			auto output = ProduceOutput(input, sut);
 
@@ -174,7 +172,7 @@ namespace filters {
 		TEST(SinglePoleHiPass, WhenStepInputShouldStepFromOneToZero) {
 			dsptk::SinglePoleHiPass sut(10., sampleRate);
 
-			std::vector<double> input(1000, 1.);
+			std::vector<double> input(testSamples, 1.);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -191,8 +189,7 @@ namespace filters {
 
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -206,8 +203,7 @@ namespace filters {
 
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -221,8 +217,7 @@ namespace filters {
 
 			dsptk::SinglePoleHiPass sut(fc, sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 1000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -250,8 +245,7 @@ namespace filters {
 
 			dsptk::BandPassFilter sut(fc, 10., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -265,8 +259,7 @@ namespace filters {
 
 			dsptk::BandPassFilter sut(fc, 10., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -280,8 +273,7 @@ namespace filters {
 
 			dsptk::BandPassFilter sut(fc, 50., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -295,8 +287,7 @@ namespace filters {
 
 			dsptk::BandPassFilter sut(fc, 50., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -323,8 +314,7 @@ namespace filters {
 
 			dsptk::BandRejectFilter sut(fc, 10., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -338,8 +328,7 @@ namespace filters {
 
 			dsptk::BandRejectFilter sut(fc, 10., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -353,8 +342,7 @@ namespace filters {
 
 			dsptk::BandRejectFilter sut(fc, 50., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -368,8 +356,7 @@ namespace filters {
 
 			dsptk::BandRejectFilter sut(fc, 50., sampleRate);
 
-			// Fill input with a sine signal at fTest
-			auto input = dsptk::sin(fTest, sampleRate, 10000);
+			auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 			auto output = ProduceOutput(input, sut);
 
@@ -398,9 +385,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -418,9 +404,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc - bw / 2.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -438,9 +423,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc + 100.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -462,9 +446,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -482,9 +465,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc - bw / 2.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -502,9 +484,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, boostDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc + 100.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -527,9 +508,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -547,9 +527,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc - bw / 2.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -567,9 +546,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc + 100.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -591,9 +569,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -611,9 +588,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc - bw / 2.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -631,9 +607,8 @@ namespace filters {
 
 				dsptk::ParametricFilter sut(fc, bw, cutDB, sampleRate);
 
-				// Fill input with a sine signal at fTest
 				double fTest = fc + 100.;
-				auto input = dsptk::sin(fTest, sampleRate, 10000);
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
 
 				auto output = ProduceOutput(input, sut);
 
@@ -647,4 +622,273 @@ namespace filters {
 		}
 
 	}
+
+	namespace lowpassshelving {
+		TEST(LowPassShelf, WhenZeroInputShouldZeroOutput) {
+			dsptk::LowPassShelvingFilter sut(200., 9., sampleRate);
+
+			std::vector<double> input(10, 0.);
+
+			auto output = ProduceOutput(input, sut);
+
+			EXPECT_EQ(output, input);
+		}
+
+		namespace boost {
+
+			TEST(LowPassShelf, WhenFreqBelowFcShouldBoost) {
+				double fc = 200.;
+				double gain = 9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 20.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain, .1);
+
+			}
+
+			TEST(LowPassShelf, WhenFreqIsFcShouldBoost3dBLessThanGain) {
+				double fc = 200.;
+				double gain = 9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 200.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain - 3, .1);
+
+			}
+
+			TEST(LowPassShelf, WhenFreqAboveFcShouldNotBoost) {
+				double fc = 50.;
+				double gain = 9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 400.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, 0., .1);
+
+			}
+		}
+
+		namespace cut {
+
+			TEST(LowPassShelf, WhenFreqBelowFcShouldCut) {
+				double fc = 200.;
+				double gain = -9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 20.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain, .1);
+
+			}
+
+			TEST(LowPassShelf, WhenFreqIsFcShouldCut3dBLessThanGain) {
+				double fc = 200.;
+				double gain = -9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 200.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain + 3, .1);
+
+			}
+
+			TEST(LowPassShelf, WhenFreqAboveFcShouldNotCut) {
+				double fc = 50.;
+				double gain = -9.;
+
+				dsptk::LowPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 400.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, 0., .1);
+
+			}
+		}
+
+
+	}
+
+	namespace hipassshelving {
+		TEST(HiPassShelf, WhenZeroInputShouldZeroOutput) {
+			dsptk::HiPassShelvingFilter sut(200., 9., sampleRate);
+
+			std::vector<double> input(10, 0.);
+
+			auto output = ProduceOutput(input, sut);
+
+			EXPECT_EQ(output, input);
+		}
+
+		namespace boost {
+
+			TEST(HiPassShelf, WhenFreqAboveFcShouldBoost) {
+				double fc = 100.;
+				double gain = 9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 400.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain, .1);
+
+			}
+
+			TEST(HiPassShelf, WhenFreqIsFcShouldBoost3dBLessThanGain) {
+				double fc = 200.;
+				double gain = 9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 200.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain - 3, .1);
+
+			}
+
+			TEST(HiPassShelf, WhenFreqBelowFcShouldNotBoost) {
+				double fc = 400.;
+				double gain = 9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 40.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, 0., .1);
+
+			}
+		}
+
+		namespace cut {
+
+			TEST(HiPassShelf, WhenFreqAboveFcShouldCut) {
+				double fc = 100.;
+				double gain = -9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 400.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain, .1);
+
+			}
+
+			TEST(HiPassShelf, WhenFreqIsFcShouldCut3dBLessThanGain) {
+				double fc = 200.;
+				double gain = -9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 200.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, gain + 3, .1);
+
+			}
+
+			TEST(HiPassShelf, WhenFreqBelowFcShouldNotCut) {
+				double fc = 400.;
+				double gain = -9.;
+
+				dsptk::HiPassShelvingFilter sut(fc, gain, sampleRate);
+
+				double fTest = 40.;
+				auto input = dsptk::sin(fTest, sampleRate, testSamples);
+
+				auto output = ProduceOutput(input, sut);
+
+				double inputMs = dsptk::MeanSquare(input);
+				double outputMs = dsptk::MeanSquare(output);
+				double resultDB = 10 * std::log10(outputMs / inputMs);
+
+				EXPECT_NEAR(resultDB, 0., .1);
+
+			}
+		}
+
+
+	}
+
 }

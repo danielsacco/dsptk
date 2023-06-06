@@ -13,12 +13,14 @@ namespace dsptk {
 
 	void Filter::UpdateSamplerate(double samplerate)
 	{
+		if (samplerate == mSamplerate) return;
 		mSamplerate = samplerate;
 		CalculateConstants();
 	}
 
 	void Filter::UpdateFrequency(double frequency)
 	{
+		if (frequency == mFrequency) return;
 		mFrequency = frequency;
 		CalculateConstants();
 	}
@@ -31,6 +33,7 @@ namespace dsptk {
 
 	void BandFilter::UpdateBandwidth(double bandwidth)
 	{
+		if (mBandwidth == bandwidth) return;
 		mBandwidth = bandwidth;
 		CalculateConstants();
 	}
@@ -191,9 +194,9 @@ namespace dsptk {
 
 	}
 
-	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double initialGainDB, double samplerate)
+	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double gainDB, double samplerate)
 		: BandFilter{ frequency, bandwidth, samplerate }
-		, mGain{ DBToAmp(initialGainDB) }
+		, mGainDB{ gainDB }
 	{
 		CalculateConstants();
 	}
@@ -210,15 +213,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void ParametricFilter::UpdateGain(double gain)
-	{
-		mGain = gain;
-		CalculateConstants();
-	}
-
 	void ParametricFilter::UpdateGainDB(double gainDB)
 	{
-		mGain = DBToAmp(gainDB);
+		if (gainDB == mGainDB) return;
+		mGainDB = gainDB;
 		CalculateConstants();
 	}
 
@@ -230,18 +228,20 @@ namespace dsptk {
 		// Digital center frequency
 		double fc = DOUBLE_PI * mFrequency / mSamplerate;
 
-		// Reference gain fixed at 0dB. May be configurable for a shelving filter.
+		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
+		double linearGain = DBToAmp(mGainDB);
+
 		// Beta factor
-		double beta = CalculateBeta(mGain, g0, bw);
+		double beta = CalculateBeta(linearGain, g0, bw);
 
 		// Filter constants
 		a1 = -2. * std::cos(fc) / (1. + beta);
 		a2 = (1. - beta) / (1. + beta);
-		b0 = (g0 + mGain * beta) / (1. + beta);
+		b0 = (g0 + linearGain * beta) / (1. + beta);
 		b1 = g0 * a1;
-		b2 = (g0 - mGain * beta) / (1. + beta);
+		b2 = (g0 - linearGain * beta) / (1. + beta);
 	}
 
 	/*
@@ -262,7 +262,153 @@ namespace dsptk {
 		// - boost is more than 3dB above the reference
 		// - cut is more than 3dB below the reference
 		// the rest of the cases for aritmetic media between both gains yield 1 for the factor
+		if ((cut_boost > 0) && (gain2 > 2. * ref2)) {
+			// Boost is more than 3dB above the reference, set the bw 3dB below the peak
+			double gb2 = gain2 / 2.;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+		else if ((cut_boost < 0) && (gain2 < ref2 / 2.)) {
+			// Cut is more than 3dB below the reference, set the bw 3dB above the notch
+			double gb2 = 2. * gain2;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+
+		return gbFactor * std::tan(bw / 2.);
+	}
+
+	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, double gainDb, double samplerate)
+		: Filter{ frequency, samplerate }
+		, mGainDB{ gainDb }
+	{
+		CalculateConstants();
+	}
+
+	double LowPassShelvingFilter::ProcessSample(double input)
+	{
+		w0 = input - a1 * w1;
+		double output = b0 * w0 + b1 * w1;
+
+		// Update filter state
+		w1 = w0;
+
+		return output;
+	}
+
+	void LowPassShelvingFilter::UpdateGainDB(double gainDB)
+	{
+		if (gainDB == mGainDB) return;
+		mGainDB = gainDB;
+		CalculateConstants();
+	}
+
+	inline void LowPassShelvingFilter::CalculateConstants()
+	{
+		// Digital cut/boost frequency
+		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+
+		// Reference gain fixed at 0dB.
+		double g0 = 1.;
+
+		double linearGain = DBToAmp(mGainDB);
+
+		// Beta factor
+		double beta = CalculateBeta(linearGain, g0, fc);
+
+		// Filter constants
+		const double denominator = 1. + beta;
+		a1 = -(1. - beta) / denominator;
+		b0 = (g0 + linearGain * beta) / denominator;
+		b1 = - (g0 - linearGain * beta) / denominator;
+	}
+
+	double LowPassShelvingFilter::CalculateBeta(double centerGain, double referenceGain, double cutBoostFreq)
+	{
+		const double cut_boost = centerGain - referenceGain;
+
+		// Square the center and reference gains
+		const double gain2 = centerGain * centerGain;
+		const double ref2 = referenceGain * referenceGain;
+
+		double gbFactor = 1.;
+
+		// We only need to calculate the gbFactor when:
+		// - boost is more than 3dB above the reference
+		// - cut is more than 3dB below the reference
+		// the rest of the cases for aritmetic media between both gains yield 1 for the factor
 		if ((cut_boost > 0) && (gain2 > 2 * ref2)) {
+			// Boost is more than 3dB above the reference, set the bw 3dB below the peak
+			double gb2 = gain2 / 2.;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+		else if ((cut_boost < 0) && (gain2 < ref2 / 2.)) {
+			// Cut is more than 3dB below the reference, set the bw 3dB above the notch
+			double gb2 = 2. * gain2;
+			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
+		}
+
+		return gbFactor * std::tan(cutBoostFreq / 2.);
+	}
+
+	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, double gainDb, double samplerate)
+		: Filter{ frequency, samplerate }
+		, mGainDB{ gainDb }
+	{
+		CalculateConstants();
+	}
+
+	double HiPassShelvingFilter::ProcessSample(double input)
+	{
+		w0 = input - a1 * w1;
+		double output = b0 * w0 + b1 * w1;
+
+		// Update filter state
+		w1 = w0;
+
+		return output;
+	}
+
+	void HiPassShelvingFilter::UpdateGainDB(double gainDB)
+	{
+		if (gainDB == mGainDB) return;
+		mGainDB = gainDB;
+		CalculateConstants();
+	}
+
+	inline void HiPassShelvingFilter::CalculateConstants()
+	{
+		// Digital cut/boost frequency
+		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+
+		// Reference gain fixed at 0dB.
+		double g0 = 1.;
+
+		double linearGain = DBToAmp(mGainDB);
+
+		// Beta factor
+		double beta = CalculateBeta(linearGain, g0, fc);
+
+		// Filter constants
+		const double denominator = 1. + beta;
+		a1 = (1. - beta) / denominator;
+		b0 = (g0 + linearGain * beta) / denominator;
+		b1 = (g0 - linearGain * beta) / denominator;
+	}
+
+	double HiPassShelvingFilter::CalculateBeta(double centerGain, double referenceGain, double cutBoostFreq)
+	{
+		const double cut_boost = centerGain - referenceGain;
+
+		// Square the center and reference gains
+		const double gain2 = centerGain * centerGain;
+		const double ref2 = referenceGain * referenceGain;
+
+		double gbFactor = 1.;
+
+		// We only need to calculate the gbFactor when:
+		// - boost is more than 3dB above the reference
+		// - cut is more than 3dB below the reference
+		// the rest of the cases for aritmetic media between both gains yield 1 for the factor
+		if ((cut_boost > 0) && (gain2 > 2. * ref2)) {
 			// Boost is more than 3dB above the reference, set the bw 3dB below the peak
 			double gb2 = gain2 / 2.;
 			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
@@ -273,7 +419,7 @@ namespace dsptk {
 			gbFactor = std::sqrt((gb2 - ref2) / (gain2 - gb2));
 		}
 
-		return gbFactor * std::tan(bw / 2);
+		return gbFactor / std::tan(cutBoostFreq / 2.);
 	}
 
 }	// End namespace dsptk
