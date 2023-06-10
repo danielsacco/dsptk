@@ -57,7 +57,7 @@ namespace dsptk {
 
 	inline void DCBlocker::CalculateConstants()
 	{
-		R = 1 - (DOUBLE_PI * mFrequency / mSamplerate);
+		R = 1 - (DOUBLE_PI<double> * mFrequency / mSamplerate);
 	}
 
 	// Single Pole Recursive Filters. Digital Signal Processing Steven W. Smith Page 322
@@ -77,7 +77,7 @@ namespace dsptk {
 
 	inline void SinglePoleLowPass::CalculateConstants()
 	{
-		b1 = std::exp( - (DOUBLE_PI * mFrequency / mSamplerate));
+		b1 = std::exp( - (DOUBLE_PI<double> * mFrequency / mSamplerate));
 		a0 = 1 - b1;
 	}
 
@@ -100,7 +100,7 @@ namespace dsptk {
 
 	inline void SinglePoleHiPass::CalculateConstants()
 	{
-		b1 = std::exp(-(DOUBLE_PI * mFrequency / mSamplerate));
+		b1 = std::exp(-(DOUBLE_PI<double> * mFrequency / mSamplerate));
 		a0 = (1 + b1) / 2.;
 		a1 = - a0;
 	}
@@ -143,7 +143,7 @@ namespace dsptk {
 
 	inline void BandPassFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double cosFactor = 2 * std::cos(DOUBLE_PI<double> * mFrequency / mSamplerate);
 		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
@@ -179,7 +179,7 @@ namespace dsptk {
 
 	inline void BandRejectFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double cosFactor = 2 * std::cos(DOUBLE_PI<double> * mFrequency / mSamplerate);
 		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
@@ -223,10 +223,10 @@ namespace dsptk {
 	inline void ParametricFilter::CalculateConstants()
 	{
 		// Digital bandwidth
-		double bw = DOUBLE_PI * mBandwidth / mSamplerate;
+		double bw = DOUBLE_PI<double> * mBandwidth / mSamplerate;
 		
 		// Digital center frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
@@ -304,7 +304,7 @@ namespace dsptk {
 	inline void LowPassShelvingFilter::CalculateConstants()
 	{
 		// Digital cut/boost frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
@@ -377,7 +377,7 @@ namespace dsptk {
 	inline void HiPassShelvingFilter::CalculateConstants()
 	{
 		// Digital cut/boost frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;

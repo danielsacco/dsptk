@@ -15,7 +15,7 @@ namespace dsptk {
 	std::vector<double> sin(double freq, int numberOfSamples, double gain) {
 		
 		std::vector<double> signal(numberOfSamples);
-		double k = dsptk::DOUBLE_PI * freq;
+		double k = dsptk::DOUBLE_PI<double> * freq;
 		for (int i = 0; i < signal.size(); i++) {
 			signal[i] = std::sin(k * i) * gain;
 		}
