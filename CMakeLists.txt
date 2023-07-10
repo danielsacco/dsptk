@@ -5,7 +5,7 @@ project(dsptk
 	DESCRIPTION "A collection of DSP Tools - Just for learning purposes."
 )
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
 
 # GoogleTest requires at least C++14 but I'll use 17
 set(CMAKE_CXX_STANDARD 17)
