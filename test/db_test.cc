@@ -2,6 +2,9 @@
 
 #include <cmath>
 #include "dsptk/dsptypes.h"
+#include "dsptk/dspliterals.h"
+
+using namespace dsptk::literals;
 
 namespace db {
 
@@ -131,5 +134,29 @@ namespace db {
 			dsptk::DB sut = 20._dB;
 			EXPECT_NEAR(sut.asPowerGain(), 100., .001);
 		}
+	}
+
+	namespace comparison {
+		TEST(Equality, WhenComparingSameValuesShouldBeEqual_0dB) {
+			dsptk::DB sut1 = .0_dB;
+			dsptk::DB sut2 = .0_dB;
+
+			EXPECT_EQ(sut1, sut2);
+		}
+
+		TEST(Equality, WhenComparingSameValuesShouldBeEqual_3dB) {
+			dsptk::DB sut1 = 3.0_dB;
+			dsptk::DB sut2 = 3.0_dB;
+
+			EXPECT_EQ(sut1, sut2);
+		}
+
+		TEST(Equality, WhenComparingDifferentValuesShouldNotBeEqual_0dB) {
+			dsptk::DB sut1 = 3.0_dB;
+			dsptk::DB sut2 = -20.0_dB;
+
+			EXPECT_NE(sut1, sut2);
+		}
+
 	}
 }

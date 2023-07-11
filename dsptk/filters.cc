@@ -194,9 +194,9 @@ namespace dsptk {
 
 	}
 
-	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double gainDB, double samplerate)
+	ParametricFilter::ParametricFilter(double frequency, double bandwidth, DB gain, double samplerate)
 		: BandFilter{ frequency, bandwidth, samplerate }
-		, mGainDB{ gainDB }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -213,10 +213,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void ParametricFilter::UpdateGainDB(double gainDB)
+	void ParametricFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
@@ -231,7 +231,7 @@ namespace dsptk {
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, bw);
@@ -276,9 +276,9 @@ namespace dsptk {
 		return gbFactor * std::tan(bw / 2.);
 	}
 
-	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, double gainDb, double samplerate)
+	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, DB gain, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ gainDb }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -294,10 +294,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void LowPassShelvingFilter::UpdateGainDB(double gainDB)
+	void LowPassShelvingFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
@@ -309,7 +309,7 @@ namespace dsptk {
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, fc);
@@ -349,9 +349,9 @@ namespace dsptk {
 		return gbFactor * std::tan(cutBoostFreq / 2.);
 	}
 
-	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, double gainDb, double samplerate)
+	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, DB gain, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ gainDb }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -367,10 +367,10 @@ namespace dsptk {
 		return output;
 	}
 
-	void HiPassShelvingFilter::UpdateGainDB(double gainDB)
+	void HiPassShelvingFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
@@ -382,7 +382,7 @@ namespace dsptk {
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, fc);
