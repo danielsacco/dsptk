@@ -7,7 +7,6 @@ add_library(dsptk STATIC
 	"detector.cc"
 	"dynamics.h" 
 	"dynamics.cc" 
-	"conversions.h"
 	"filters.h" 
 	"filters.cc"
 	"constants.h"
@@ -17,8 +16,7 @@ add_library(dsptk STATIC
 
 install(FILES 
 	"detector.h" 
-	"dynamics.h" 
-	"conversions.h" 
+	"dynamics.h"
 	"filters.h" 
 	"constants.h" 
 	"convolution.h" 

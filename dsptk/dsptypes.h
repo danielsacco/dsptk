@@ -1,7 +1,6 @@
 #pragma once
 
 #include "cmath"
-#include "conversions.h"
 
 namespace dsptk {
 

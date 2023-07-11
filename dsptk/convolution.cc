@@ -7,7 +7,7 @@ namespace dsptk {
 
 		if(input.size() == 0 || kernel.size() == 0) return std::vector<double>(0);
 
-		int resultSize = input.size() + kernel.size() - 1;
+		size_t resultSize = input.size() + kernel.size() - 1;
 		auto result = std::vector<double>(resultSize, 0.0);
 
 		for (int i = 0; i < input.size(); i++) {

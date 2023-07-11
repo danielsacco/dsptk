@@ -1,7 +1,6 @@
 #include "filters.h"
 #include "constants.h"
 #include <cmath>
-#include "conversions.h"
 
 namespace dsptk {
 
