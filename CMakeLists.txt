@@ -1,11 +1,11 @@
 # Root Makelist
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.19)
 project(dsptk
 	VERSION 0.1
 	DESCRIPTION "A collection of DSP Tools - Just for learning purposes."
 )
 
-# set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 # GoogleTest requires at least C++14 but I'll use 17
 set(CMAKE_CXX_STANDARD 17)
