@@ -5,3 +5,10 @@ Already exists a lot of open source libraries so this work may not be useful for
 # TODO
 * Classes documentation
 * Test coverage
+* Download dependencies via cmake so we don't need to manually them.
+
+
+# Dependencies (Some of them will be dowloaded via cmake)
+* cmake
+* doxygen
+* latex
