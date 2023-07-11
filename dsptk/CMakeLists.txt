@@ -13,8 +13,17 @@ add_library(dsptk STATIC
 	"constants.h"
 	"convolution.h"
 	"convolution.cc"
- "dft.h" "dft.cc" "signals.h" "signals.cc" "dsptypes.h")
+ "dft.h" "dft.cc" "signals.h" "signals.cc" "dsptypes.h" "dspliterals.h")
 
 install(FILES 
-	"detector.h" "dynamics.h" "conversions.h" "filters.h" "constants.h" "convolution.h" "dft.h" "signals.h" DESTINATION include
+	"detector.h" 
+	"dynamics.h" 
+	"conversions.h" 
+	"filters.h" 
+	"constants.h" 
+	"convolution.h" 
+	"dft.h" 
+	"signals.h" 
+	"dsptypes.h" 
+	"dspliterals.h" DESTINATION include
 )

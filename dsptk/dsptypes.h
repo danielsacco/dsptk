@@ -35,13 +35,16 @@ namespace dsptk {
 			return DB(-value);
 		}
 
+		bool operator==(const DB& rhs) const { return value == rhs.value; }
+
+		bool operator!=(const DB& rhs) const { return value != rhs.value; }
+
 	private:
 		double value = 0.;
 	};
 
+
 }
 
-dsptk::DB operator "" _dB(const long double dBValue) {
-	return dsptk::DB(dBValue);
-}
+
 
