@@ -10,25 +10,14 @@ project(dsptk
 # GoogleTest requires at least C++14 but I'll use 17
 set(CMAKE_CXX_STANDARD 17)
 
-include(FetchContent)
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        b796f7d44681514f58a683a3a71ff17c94edb0c1 # v1.13.0
-)
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
 add_subdirectory(dsptk)
-add_subdirectory(test)
+add_subdirectory(test EXCLUDE_FROM_ALL)
 add_subdirectory(docs)
 
-option(INSTALL_GTEST "Enable installation of googletest. (Projects embedding googletest may want to turn this OFF.)" OFF)
-
-install(TARGETS dsptk 
+install(TARGETS dsptk
 	LIBRARY DESTINATION lib
     ARCHIVE DESTINATION lib COMPONENT Development
 )
