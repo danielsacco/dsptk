@@ -10,11 +10,14 @@ set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 # GoogleTest requires at least C++14 but I'll use 17
 set(CMAKE_CXX_STANDARD 17)
 
-
 enable_testing()
 
+# GoogleTest should not be installed with this project
+option(INSTALL_GTEST "Enable installation of googletest." OFF)
+option(INSTALL_GMOCK "Enable installation of googlemock." OFF)
+
 add_subdirectory(dsptk)
-add_subdirectory(test EXCLUDE_FROM_ALL)
+add_subdirectory(test)
 add_subdirectory(docs)
 
 install(TARGETS dsptk
