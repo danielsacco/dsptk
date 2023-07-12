@@ -2,6 +2,7 @@
 #include <vector>
 #include <cmath>
 #include <memory>
+#include "dsptypes.h"
 
 namespace dsptk {
 
@@ -150,10 +151,10 @@ namespace dsptk {
 		 * @brief Creates a Parametric filter.
 		 * @param frequency the 3dB cut/boost frequency.
 		 * @param bandwidth the bandwidth in Hz.
-		 * @param gainDB the boost/cut gain in dB.
+		 * @param gain the boost/cut gain in dB.
 		 * @param samplerate the operating sample rate.
 		*/
-		ParametricFilter(double frequency, double bandwidth, double gainDB, double samplerate);
+		ParametricFilter(double frequency, double bandwidth, DB gain, double samplerate);
 
 		/**
 		 * @copydoc Filter::ProcessSample()
@@ -162,9 +163,9 @@ namespace dsptk {
 
 		/**
 		 * @brief Updates the boost/cut gain in dBs.
-		 * @param gainDB the boost/cut gain in dBs.
+		 * @param gain the boost/cut gain in dBs.
 		*/
-		void UpdateGainDB(double gainDB);
+		void UpdateGain(DB gain);
 
 	private:
 		// Filter state
@@ -175,7 +176,7 @@ namespace dsptk {
 		double b0, b1, b2, a1, a2;
 
 		// Gain in dBs
-		double mGainDB;
+		DB mGain;
 
 		inline void CalculateConstants() override;
 
@@ -198,10 +199,10 @@ namespace dsptk {
 		/**
 		 * @brief Creates a Low pass shelving filter
 		 * @param frequency the cutoff frequency.
-		 * @param gainDB the shelf boost/cut gain.
+		 * @param gain the shelf boost/cut gain.
 		 * @param samplerate the operating sample rate.
 		*/
-		LowPassShelvingFilter(double frequency, double gainDB, double samplerate);
+		LowPassShelvingFilter(double frequency, DB gain, double samplerate);
 
 		/**
 		 * @copydoc Filter::ProcessSample()
@@ -210,9 +211,9 @@ namespace dsptk {
 
 		/**
 		 * @brief Updates the shelf boost/cut gain in dBs.
-		 * @param gainDB the shelf boost/cut gain in dBs.
+		 * @param gain the shelf boost/cut gain in dBs.
 		*/
-		void UpdateGainDB(double gainDB);
+		void UpdateGain(DB gain);
 
 	protected:
 		inline void CalculateConstants() override;
@@ -226,7 +227,7 @@ namespace dsptk {
 		double b0, b1, a1;
 
 		// Gain in dBs
-		double mGainDB;
+		DB mGain;
 
 		/** Calculates the beta factor.
 */
@@ -248,10 +249,10 @@ namespace dsptk {
 		/**
 		 * @brief Creates a Hi pass shelving filter
 		 * @param frequency the cutoff frequency.
-		 * @param gainDB the shelf boost/cut gain.
+		 * @param gain the shelf boost/cut gain.
 		 * @param samplerate the operating sample rate.
 		*/
-		HiPassShelvingFilter(double frequency, double initialGainDB, double samplerate);
+		HiPassShelvingFilter(double frequency, DB gain, double samplerate);
 
 		/**
 		 * @copydoc Filter::ProcessSample()
@@ -260,9 +261,9 @@ namespace dsptk {
 
 		/**
 		 * @brief Updates the shelf boost/cut gain in dBs.
-		 * @param gainDB the shelf boost/cut gain in dBs.
+		 * @param gain the shelf boost/cut gain in dBs.
 		*/
-		void UpdateGainDB(double gainDB);
+		void UpdateGain(DB gain);
 
 	protected:
 		inline void CalculateConstants() override;
@@ -276,7 +277,7 @@ namespace dsptk {
 		double b0, b1, a1;
 
 		// Gain in dBs
-		double mGainDB;
+		DB mGain;
 
 		/** Calculates the beta factor.
 		*/

@@ -1,6 +1,6 @@
 #include <vector>
 #include "dynamics.h"
-#include "conversions.h"
+#include "dsptypes.h"
 
 namespace dsptk {
 
@@ -71,7 +71,7 @@ namespace dsptk {
         // Log of control (sidechain or input) signal
         double* controlSignal = sidechain ? sidechain : input;
         for (int s = 0; s < nFrames; s++) {
-            localBuffer[s] = AmpToDB(controlSignal[s]);
+            localBuffer[s] = dsptk::DB::fromLinearGain(controlSignal[s]).asDB();
         }
 
         // Pass log of control signal through gain curve
@@ -82,7 +82,7 @@ namespace dsptk {
 
         // Back to linear for feeding the detector
         for (int s = 0; s < nFrames; s++) {
-            vcaGain[s] = DBToAmp(vcaGain[s]);
+            vcaGain[s] = dsptk::DB(vcaGain[s]).asLinearGain();
         }
 
         // Attack/Release post gain curve

@@ -1,7 +1,6 @@
 #include "filters.h"
 #include "constants.h"
 #include <cmath>
-#include "conversions.h"
 
 namespace dsptk {
 
@@ -57,7 +56,7 @@ namespace dsptk {
 
 	inline void DCBlocker::CalculateConstants()
 	{
-		R = 1 - (DOUBLE_PI * mFrequency / mSamplerate);
+		R = 1 - (DOUBLE_PI<double> * mFrequency / mSamplerate);
 	}
 
 	// Single Pole Recursive Filters. Digital Signal Processing Steven W. Smith Page 322
@@ -77,7 +76,7 @@ namespace dsptk {
 
 	inline void SinglePoleLowPass::CalculateConstants()
 	{
-		b1 = std::exp( - (DOUBLE_PI * mFrequency / mSamplerate));
+		b1 = std::exp( - (DOUBLE_PI<double> * mFrequency / mSamplerate));
 		a0 = 1 - b1;
 	}
 
@@ -100,7 +99,7 @@ namespace dsptk {
 
 	inline void SinglePoleHiPass::CalculateConstants()
 	{
-		b1 = std::exp(-(DOUBLE_PI * mFrequency / mSamplerate));
+		b1 = std::exp(-(DOUBLE_PI<double> * mFrequency / mSamplerate));
 		a0 = (1 + b1) / 2.;
 		a1 = - a0;
 	}
@@ -143,7 +142,7 @@ namespace dsptk {
 
 	inline void BandPassFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double cosFactor = 2 * std::cos(DOUBLE_PI<double> * mFrequency / mSamplerate);
 		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
@@ -179,7 +178,7 @@ namespace dsptk {
 
 	inline void BandRejectFilter::CalculateConstants()
 	{
-		double cosFactor = 2 * std::cos(DOUBLE_PI * mFrequency / mSamplerate);
+		double cosFactor = 2 * std::cos(DOUBLE_PI<double> * mFrequency / mSamplerate);
 		double R = 1 - 3 * mBandwidth / mSamplerate;
 		double RR = R * R;
 
@@ -194,9 +193,9 @@ namespace dsptk {
 
 	}
 
-	ParametricFilter::ParametricFilter(double frequency, double bandwidth, double gainDB, double samplerate)
+	ParametricFilter::ParametricFilter(double frequency, double bandwidth, DB gain, double samplerate)
 		: BandFilter{ frequency, bandwidth, samplerate }
-		, mGainDB{ gainDB }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -213,25 +212,25 @@ namespace dsptk {
 		return output;
 	}
 
-	void ParametricFilter::UpdateGainDB(double gainDB)
+	void ParametricFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
 	inline void ParametricFilter::CalculateConstants()
 	{
 		// Digital bandwidth
-		double bw = DOUBLE_PI * mBandwidth / mSamplerate;
+		double bw = DOUBLE_PI<double> * mBandwidth / mSamplerate;
 		
 		// Digital center frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, bw);
@@ -276,9 +275,9 @@ namespace dsptk {
 		return gbFactor * std::tan(bw / 2.);
 	}
 
-	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, double gainDb, double samplerate)
+	LowPassShelvingFilter::LowPassShelvingFilter(double frequency, DB gain, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ gainDb }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -294,22 +293,22 @@ namespace dsptk {
 		return output;
 	}
 
-	void LowPassShelvingFilter::UpdateGainDB(double gainDB)
+	void LowPassShelvingFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
 	inline void LowPassShelvingFilter::CalculateConstants()
 	{
 		// Digital cut/boost frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, fc);
@@ -349,9 +348,9 @@ namespace dsptk {
 		return gbFactor * std::tan(cutBoostFreq / 2.);
 	}
 
-	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, double gainDb, double samplerate)
+	HiPassShelvingFilter::HiPassShelvingFilter(double frequency, DB gain, double samplerate)
 		: Filter{ frequency, samplerate }
-		, mGainDB{ gainDb }
+		, mGain{ gain }
 	{
 		CalculateConstants();
 	}
@@ -367,22 +366,22 @@ namespace dsptk {
 		return output;
 	}
 
-	void HiPassShelvingFilter::UpdateGainDB(double gainDB)
+	void HiPassShelvingFilter::UpdateGain(DB gain)
 	{
-		if (gainDB == mGainDB) return;
-		mGainDB = gainDB;
+		if (gain == mGain) return;
+		mGain = gain;
 		CalculateConstants();
 	}
 
 	inline void HiPassShelvingFilter::CalculateConstants()
 	{
 		// Digital cut/boost frequency
-		double fc = DOUBLE_PI * mFrequency / mSamplerate;
+		double fc = DOUBLE_PI<double> * mFrequency / mSamplerate;
 
 		// Reference gain fixed at 0dB.
 		double g0 = 1.;
 
-		double linearGain = DBToAmp(mGainDB);
+		double linearGain = mGain.asLinearGain();
 
 		// Beta factor
 		double beta = CalculateBeta(linearGain, g0, fc);

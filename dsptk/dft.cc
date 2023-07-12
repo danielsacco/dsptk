@@ -44,7 +44,7 @@ namespace dsptk {
 				}
 				else {
 					// Use sin/cos functions
-					double phase = dsptk::DOUBLE_PI * fractional_factor;
+					double phase = dsptk::DOUBLE_PI<double> * fractional_factor;
 					result[reX][k] += signal[n] * std::cos(phase);
 					result[imX][k] -= signal[n] * std::sin(phase);
 				}
